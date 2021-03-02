@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".DashboardActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:id="@+id/layout_header"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/_8sdp"
+            android:background="@android:color/darker_gray"
+            android:nestedScrollingEnabled="false"
+            android:scrollbars="none"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <ImageView
+                android:id="@+id/image_back"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/ic_back"
+                />
+            
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubuntubold"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="Your Profile"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_14ssp"/>
+            
+            <ImageView
+                android:id="@+id/image_search"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/ic_more"
+                />
+        </LinearLayout>
+        
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_card"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_240sdp"
+            app:layout_constraintTop_toBottomOf="@+id/layout_header"
+            android:background="@android:color/darker_gray"
+            app:cardBackgroundColor="@android:color/darker_gray">
+            
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="@dimen/_96sdp"
+                android:layout_height="@dimen/_96sdp"
+                android:src="@drawable/ic_account"
+                android:layout_marginTop="@dimen/_26sdp"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubuntubold"
+                android:maxLines="1"
+                android:layout_gravity="center"
+                android:includeFontPadding="false"
+                android:text="Joe N Deo"
+                android:textSize="@dimen/_24ssp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="@dimen/_15sdp"
+                />
+
+            <TextView
+                android:id="@+id/description1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubunturegular"
+                android:maxLines="1"
+                android:layout_gravity="center"
+                android:text="description1"
+                android:textSize="@dimen/_14ssp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="@dimen/_44sdp"
+                />
+
+            <TextView
+                android:id="@+id/description2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubunturegular"
+                android:maxLines="1"
+                android:layout_gravity="center"
+                android:text="description2"
+                android:textSize="@dimen/_14ssp"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="@dimen/_64sdp"
+                />
+
+        </androidx.cardview.widget.CardView>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/profile_card"
+            android:nestedScrollingEnabled="false"
+            android:padding="4dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
