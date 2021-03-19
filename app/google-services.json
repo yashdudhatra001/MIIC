@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1068610461223",
+    "project_id": "miic-3d891",
+    "storage_bucket": "miic-3d891.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068610461223:android:f3418490fb5e2a34ca7802",
+        "android_client_info": {
+          "package_name": "com.yash1213.miic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068610461223-uvuemhi3fd42fgumhjaoh2goaojp9tmm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yash1213.miic",
+            "certificate_hash": "ce63d858aba338f2c958aec489d868ca75df81cc"
+          }
+        },
+        {
+          "client_id": "1068610461223-qi1gtr6mn2m1rkv8jml25ea330c513gf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUAAq3PZtd_rdGHRnRaK2h9gJI-ov4txA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068610461223-qi1gtr6mn2m1rkv8jml25ea330c513gf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
