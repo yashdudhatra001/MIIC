@@ -1,4 +1,4 @@
-package com.yash1213.miic;
+package com.yash1213.miic.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yash1213.miic.R;
+
 public class CustomAdapterGridViewAdapter extends BaseAdapter {
+
     private Context mContext;
     private final String[] string;
     private final int[] Imageid;
@@ -41,7 +44,6 @@ public class CustomAdapterGridViewAdapter extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-
             grid = new View(mContext);
             grid = inflater.inflate(R.layout.row_item, null);
             TextView textView = (TextView) grid.findViewById(R.id.gridview_text);
