@@ -172,6 +172,19 @@
                     />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="right|bottom"
+                android:text="Forgot password?"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_12sdp"
+                android:layout_marginBottom="@dimen/_2sdp"
+                android:onClick="forgotPassword"
+                />
+
         </androidx.cardview.widget.CardView>
 
 

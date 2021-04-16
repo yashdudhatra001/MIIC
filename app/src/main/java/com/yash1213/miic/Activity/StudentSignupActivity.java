@@ -149,35 +149,46 @@ public class StudentSignupActivity extends Activity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful() ) {
-
-                                if( year.equals("BE-III")){
-                                    dbRef = FirebaseDatabase.getInstance().getReference("students");
-                                    String id = mAuth.getCurrentUser().getUid();
-                                    String fn = fname + " "+ lname;
-                                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                                    String description = "Welcome to MIIC";
-                                    StudentDetails sd = new StudentDetails(date,description,0);
-                                    detailsArrayList.add(sd);
-                                    Students student = new Students(id,fn,year,email,contact,PRN,0,detailsArrayList);
-                                    dbRef.child(id).setValue(student).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()) {
+                                
+                                mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                    
+                                        if(task.isSuccessful()){
+                                            if( year.equals("BE-III")){
+                                                dbRef = FirebaseDatabase.getInstance().getReference("students");
+                                                String id = mAuth.getCurrentUser().getUid();
+                                                String fn = fname + " "+ lname;
+                                                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                                String description = "Welcome to MIIC";
+                                                StudentDetails sd = new StudentDetails(date,description,0);
+                                                detailsArrayList.add(sd);
+                                                Students student = new Students(id,fn,year,email,contact,PRN,0,detailsArrayList);
+                                                dbRef.child(id).setValue(student).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful()) {
+                                                            mAuth.signOut();
+                                                            Intent ii = new Intent(StudentSignupActivity.this,LoginActivity.class);
+                                                            ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                            startActivity(ii);
+                                                            overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+                                                            //Toast.makeText(StudentSignupActivity.this, "SignUp Successful as BE-III", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }else{
+                                                mAuth.signOut();
                                                 Intent ii = new Intent(StudentSignupActivity.this,LoginActivity.class);
                                                 ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 startActivity(ii);
                                                 overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
-                                                Toast.makeText(StudentSignupActivity.this, "SignUp Successful as BE-III", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(StudentSignupActivity.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
                                             }
+                                            Toast.makeText(StudentSignupActivity.this, "Please check email for verification", Toast.LENGTH_SHORT).show();
                                         }
-                                    });
-                                }else{
-                                    Intent ii = new Intent(StudentSignupActivity.this,LoginActivity.class);
-                                    ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(ii);
-                                    overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
-                                    Toast.makeText(StudentSignupActivity.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
-                                }
+                                    }
+                                });
                             }else{
                                 progressBar.setVisibility(View.GONE);
                                 btsingup.setVisibility(View.VISIBLE);

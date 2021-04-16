@@ -11,9 +11,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +30,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
-import com.yash1213.miic.Adapter.CustomAdapterGridViewAdapter;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.yash1213.miic.Adapter.ViewPagerAdapter;
+import com.yash1213.miic.Notification.Token;
 import com.yash1213.miic.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,22 +47,27 @@ public class MainActivity extends AppCompatActivity
 
     private ViewPager viewPager;
     private CircleIndicator indicator;
-    private GridView grid;
+    private LinearLayout llDashboard, llUpdates, llC2C, llLibrary;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TextView tvFirstChar, tvName, tvEmail;
     private DatabaseReference dbRef;
     private FirebaseAuth mAuth;
-    private ImageView instaImage,facebookImage, linkedInImage;
+    private ImageView instaImage,facebookImage, linkedInImage, youtubeImage;
 
-    private StorageReference store;
+    private String sId;
+    private Handler handler;
+    private Timer swipeTimer;
+    private boolean doubleBackToExitPressedOnce = false;
+    private String play = "";
+
 
     private static final String instaUrl = "https://www.instagram.com/invites/contact/?i=dttgsyjcb9yg&utm_content=83zd7zp";
     private static final String facebookUrl = "https://facebook.com/MIIC-Mechanical-Industrial-Interaction-Cell-106195180724433";
     private static final String linkedInUrl = "https://www.linkedin.com/company/mechanical-industrial-interaction-cell";
     private static final String formUrl = "https://forms.gle/UuVayjcZWfkY7WbZA";
-    private static final String libUrl = "";
-
+    private static final String youtubeUrl = "https://youtube.com/channel/UCjXSZKQgZ62BWY4b00FDfrw";
+    private static final String privacyPolicy = "https://miic4u.blogspot.com/2021/04/privacy-policy-yash-dudhatra-built.html";
     private static int currentPage = 0;
     private static int NUM_PAGES = 0;
     private PagerAdapter adapter;
@@ -89,13 +94,17 @@ public class MainActivity extends AppCompatActivity
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+        sId = mAuth.getCurrentUser().getUid();
+
         viewPager = findViewById(R.id.slideImageView);
         indicator = findViewById(R.id.indicator);
 
-        getImageUrls();
 
-        grid = findViewById(R.id.grid);
-        grid.setAdapter(new CustomAdapterGridViewAdapter(this,gridViewStrings,img));
+        llDashboard = findViewById(R.id.dashboard);
+        llUpdates = findViewById(R.id.updates);
+        llC2C = findViewById(R.id.c2c);
+        llLibrary = findViewById(R.id.library);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -113,25 +122,39 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        llLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                if (position == 0) {
-                    Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                    startActivity(intent);
-                }
-                if (position == 1) {
-                    Intent intent = new Intent(MainActivity.this, UpdatesActivity.class);
-                    startActivity(intent);
-                }
-                if (position == 2) {
-                    //Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
-                    //startActivity(intent);
-                }
-                if (position == 3) {
-                    Intent intent = new Intent(MainActivity.this, CampusActivity.class);
-                    startActivity(intent);
-                }
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LibraryActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+            }
+        });
+
+        llC2C.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CampusActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+            }
+        });
+
+        llUpdates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UpdatesActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+            }
+        });
+
+        llDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
             }
         });
 
@@ -154,13 +177,16 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         instaImage = findViewById(R.id.instaImage);
         facebookImage = findViewById(R.id.facebookImage);
         linkedInImage = findViewById(R.id.linkedInImage);
+        youtubeImage = findViewById(R.id.youtubeImage);
         instaImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +205,16 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(linkedInUrl)));
             }
         });
+
+        youtubeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeUrl)));
+            }
+        });
     }
+
+
 
     private void getImageUrls() {
 
@@ -198,7 +233,8 @@ public class MainActivity extends AppCompatActivity
                         imageUri.add(dataSnapshot.child("imageUri").getValue().toString());
                     }
                 }
-                Toast.makeText(MainActivity.this, ""+imageUri.size(), Toast.LENGTH_SHORT).show();
+                Collections.sort(imageUri,Collections.<String>reverseOrder());
+                //Toast.makeText(MainActivity.this, ""+imageUri.size(), Toast.LENGTH_SHORT).show();
                 adapter = new ViewPagerAdapter(MainActivity.this,imageUri);
                 viewPager.setAdapter(adapter);
 
@@ -213,36 +249,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     @Override
                     public void onPageScrollStateChanged(int state) {
-                        //Toast.makeText(getApplicationContext(), "context changed", Toast.LENGTH_SHORT).show();
-                /*
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    int pageCount = 4;
-                    if (currentPage == 0) {
-                        viewPager.setCurrentItem(pageCount - 1, false);
-                    } else if (currentPage == pageCount - 1) {
-                        viewPager.setCurrentItem(0, false);
-                    }
-                }
-                 */}});
-                final Handler handler = new Handler();
-                final Runnable update = new Runnable() {
-                    @Override
-                    public void run() {
-                        NUM_PAGES = 4;
-                        if (currentPage == NUM_PAGES) {
-                            currentPage = 0;
-                        }
-                        viewPager.setCurrentItem(currentPage++, true);
-                    }
-                };
-                Timer swipeTimer = new Timer();
-                swipeTimer.schedule(new TimerTask() {
-
-                    @Override
-                    public void run() {
-                        handler.post(update);
-                    }
-                }, 500, 2500);
+                    }});
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -251,14 +258,31 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
         }
+
+
+
     }
 
     @Override
@@ -285,6 +309,16 @@ public class MainActivity extends AppCompatActivity
             Intent ii = new Intent(MainActivity.this,CurrentCosActivity.class);
             startActivity(ii);
             overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+        }else if(id == R.id.nav_item_five){
+            Intent ii = new Intent(MainActivity.this,FounderActivity.class);
+            startActivity(ii);
+            overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+        }else if(id == R.id.nav_item_six){
+            Intent ii = new Intent(MainActivity.this,DeveloperActivity.class);
+            startActivity(ii);
+            overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+        }else if(id == R.id.nav_item_seven){
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicy)));
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -295,6 +329,33 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+        DatabaseReference dbRun = FirebaseDatabase.getInstance().getReference("run");
+        dbRun.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                play = snapshot.child("play").getValue().toString();
+                if(play.equals("false")){
+                    Toast.makeText(getApplicationContext(), "App Closed By Admin", Toast.LENGTH_LONG).show();
+                    try {
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+
+                        alertDialog.setTitle("Info");
+                        alertDialog.setMessage("App under Development.");
+                        alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
+                        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        alertDialog.show();
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
             Toast.makeText(getApplicationContext(), "No Internet connection!", Toast.LENGTH_LONG).show();
             try {
@@ -311,9 +372,39 @@ public class MainActivity extends AppCompatActivity
                 alertDialog.show();
             } catch (Exception e) {
             }
+        }  else{
+            getImageUrls();
+
+            handler = new Handler();
+            final Runnable update = new Runnable() {
+                @Override
+                public void run() {
+                    NUM_PAGES = 4;
+                    if (currentPage == NUM_PAGES) {
+                        currentPage = 0;
+                    }
+                    viewPager.setCurrentItem(currentPage++, true);
+                }
+            };
+            swipeTimer = new Timer();
+            swipeTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(update);
+                }
+            }, 500, 3000);
         }
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        swipeTimer.cancel();
+    }
+    private void updateToken(String token){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        reference.child(sId).setValue(token1);
+    }
 
 }

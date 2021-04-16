@@ -1,5 +1,8 @@
 package com.yash1213.miic.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,13 +31,13 @@ import java.util.ArrayList;
 
 public class YourProfileActivity extends AppCompatActivity {
 
-    private ImageView imageBack;
+    private ImageView imageBack, imageDel;
     private TextView tvProfile;
     private TextView tvName, tvPoints, tvDescription;
     private RecyclerView commentsView;
     private ProgressBar progressBar;
     private String sId;
-    private DatabaseReference dbRef, dbsRef;
+    private DatabaseReference dbRef, dbsRef , dbRef1,dbRef2;
     private FirebaseAuth mAuth;
     private CoCommentsAdapter commentsAdapter;
     private ArrayList<StudentDetails> sdList = new ArrayList<>();
@@ -47,10 +52,17 @@ public class YourProfileActivity extends AppCompatActivity {
         sId = mAuth.getCurrentUser().getUid();
 
         imageBack = findViewById(R.id.image_back);
+        imageDel = findViewById(R.id.image_del);
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+        imageDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                simpleAlert(sId);
             }
         });
 
@@ -79,26 +91,7 @@ public class YourProfileActivity extends AppCompatActivity {
                         tvDescription.setText(snapshot.child("studentEmail").getValue().toString()+"\n"
                                 +snapshot.child("studentPh").getValue().toString());
                     }
-                    dbRef = FirebaseDatabase.getInstance().getReference("students");
-                    dbRef.child(sId).child("profiles").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for(DataSnapshot ds:snapshot.getChildren()){
-                                StudentDetails sd = ds.getValue(StudentDetails.class);
-                                sdList.add(sd);
-                            }
-                            commentsAdapter = new CoCommentsAdapter(getApplicationContext(),sdList);
-                            commentsView.setAdapter(commentsAdapter);
-                            commentsAdapter.notifyDataSetChanged();
-                            progressBar.setVisibility(View.GONE);
-                            commentsView.setVisibility(View.VISIBLE);
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(YourProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    commentList();
                 }else{
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(YourProfileActivity.this, "Guest", Toast.LENGTH_SHORT).show();
@@ -109,6 +102,75 @@ public class YourProfileActivity extends AppCompatActivity {
                 Toast.makeText(YourProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
+    private void commentList(){
+
+        dbRef = FirebaseDatabase.getInstance().getReference("students");
+        dbRef.child(sId).child("profiles").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds:snapshot.getChildren()){
+                    StudentDetails sd = ds.getValue(StudentDetails.class);
+                    sdList.add(sd);
+                }
+                commentsAdapter = new CoCommentsAdapter(getApplicationContext(),sdList);
+                commentsView.setAdapter(commentsAdapter);
+                commentsAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+                commentsView.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(YourProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    public void simpleAlert(final String sId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(YourProfileActivity.this);
+        builder.setTitle("Alert");
+        builder.setMessage("Do you want to delete your account ?");
+        builder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbRef1 = FirebaseDatabase.getInstance().getReference("students");
+                        dbRef1.orderByChild("studentId").equalTo(sId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    dbRef1.child(sId).removeValue();
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(YourProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        dbRef2 = FirebaseDatabase.getInstance().getReference("Tokens");
+                        dbRef2.child(sId).removeValue();
+                        mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Intent ii = new Intent(YourProfileActivity.this,LoginActivity.class);
+                                    startActivity(ii);
+                                    finish();
+                                }
+                            }
+                        });
+                    }
+                });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(YourProfileActivity.this,
+                        android.R.string.no, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
+    
 }

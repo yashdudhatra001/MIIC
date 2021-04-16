@@ -1,7 +1,6 @@
 package com.yash1213.miic.Activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -24,10 +23,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.yash1213.miic.Adapter.CoCommentsAdapter;
-import com.yash1213.miic.R;
 import com.yash1213.miic.Model.StudentDetails;
+import com.yash1213.miic.Notification.Client;
+import com.yash1213.miic.Notification.Data;
+import com.yash1213.miic.Notification.MyResponse;
+import com.yash1213.miic.Notification.Sender;
+import com.yash1213.miic.Notification.Token;
+import com.yash1213.miic.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +40,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class CoProfileActivity extends AppCompatActivity {
 
@@ -55,6 +65,9 @@ public class CoProfileActivity extends AppCompatActivity {
     private DatabaseReference dbRef,dbsRef;
     private ArrayList<StudentDetails> sdList = new ArrayList<>();
 
+    private APIService apiService;
+    private boolean notify = false;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +83,8 @@ public class CoProfileActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         tvProfile = findViewById(R.id.textFirstChar);
         tvName = findViewById(R.id.name);
@@ -114,13 +129,14 @@ public class CoProfileActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CoProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoProfileActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
         dbRef = FirebaseDatabase.getInstance().getReference("students");
         dbRef.child(sId).child("profiles").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                sdList.clear();
                 for(DataSnapshot ds:snapshot.getChildren()){
                     StudentDetails sd = ds.getValue(StudentDetails.class);
                     sdList.add(sd);
@@ -135,7 +151,7 @@ public class CoProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CoProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoProfileActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -161,18 +177,51 @@ public class CoProfileActivity extends AppCompatActivity {
                             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                             tData.setText("");
                             tP.setText("");
-
-                            if (Build.VERSION.SDK_INT >= 11) {
-                                recreate();
-                            } else {
-                                finish();
-                                startActivity(getIntent());
+                            notify = true;
+                            commentsAdapter.notifyDataSetChanged();
+                            if(notify){
+                                sendNotification(sId);
+                                notify = false;
                             }
-                            Toast.makeText(CoProfileActivity.this, "updated successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                          }});
                 }
             }
         });
     }
+
+    private void sendNotification(String receiver){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(sId, R.mipmap.ic_icon,"check your activity score." , "Profile Updated.",
+                            sId);
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200){
+                                        if (response.body().success != 1){
+                                            Toast.makeText(CoProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                           // Toast.makeText(CoProfileActivity.this, "SuccessNotification", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                                }
+                            });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
 }

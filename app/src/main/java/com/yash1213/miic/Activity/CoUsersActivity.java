@@ -67,7 +67,7 @@ public class CoUsersActivity extends AppCompatActivity {
                     st.setTotalPoint(Integer.parseInt(dataSnapshot.child("totalPoint").getValue().toString()));
                     studentList.add(st);
                 }
-                coUserAdapter = new CoUserAdapter(getApplicationContext(),studentList);
+                coUserAdapter = new CoUserAdapter(CoUsersActivity.this,studentList);
                 recyclerView.setAdapter(coUserAdapter);
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
@@ -75,7 +75,7 @@ public class CoUsersActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CoUsersActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoUsersActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 wrongText.setVisibility(View.VISIBLE);

@@ -18,14 +18,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.yash1213.miic.Model.Posts;
+import com.yash1213.miic.Notification.Client;
+import com.yash1213.miic.Notification.Data;
+import com.yash1213.miic.Notification.MyResponse;
+import com.yash1213.miic.Notification.Sender;
+import com.yash1213.miic.Notification.Token;
 import com.yash1213.miic.R;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class AddUpdatesActivity extends AppCompatActivity {
@@ -40,11 +52,15 @@ public class AddUpdatesActivity extends AppCompatActivity {
     private DatabaseReference dbRef;
     private StorageReference store;
 
+    private  APIService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_add_updates);
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         imageCancel = findViewById(R.id.image_cancel);
         imageUpdate = findViewById(R.id.image_added);
@@ -96,6 +112,8 @@ public class AddUpdatesActivity extends AppCompatActivity {
                     Posts posts = new Posts(time, imageUrl,desc);
                     dbRef = FirebaseDatabase.getInstance().getReference("Posts").child(""+time);
                     dbRef.setValue(posts);
+                    sendNotification();
+                    Toast.makeText(AddUpdatesActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
                     Intent ii = new Intent(AddUpdatesActivity.this, CoUpdateActivity.class);
                     ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(ii);
@@ -128,5 +146,39 @@ public class AddUpdatesActivity extends AppCompatActivity {
             overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
             finish();
         }
+    }
+
+    private void sendNotification(){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        tokens.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(snapshot.getKey(), R.mipmap.ic_icon,"New Updates. Take a look." , "New Activity Update",
+                            snapshot.getKey());
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200){
+                                        if (response.body().success != 1){
+                                            //Toast.makeText(AddUpdatesActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                           // Toast.makeText(AddUpdatesActivity.this, "SuccessNotification", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                                }
+                            });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 }

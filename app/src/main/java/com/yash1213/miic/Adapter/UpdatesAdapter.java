@@ -3,7 +3,6 @@ package com.yash1213.miic.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +25,6 @@ import com.google.firebase.storage.StorageReference;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.yash1213.miic.Model.Posts;
 import com.yash1213.miic.R;
 
@@ -78,24 +75,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<UpdatesAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Posts p = postList.get(position);
-        imageLoader.loadImage(p.getImageUri(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                imageLoader.displayImage(String.valueOf(R.drawable.ic_image_360),holder.imageView,displayImageOptions,null);
-            }
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-            }
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                imageLoader.displayImage(p.getImageUri(),holder.imageView,displayImageOptions,null);
-            }
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-
-            }
-        });
+        imageLoader.displayImage(p.getImageUri(),holder.imageView,displayImageOptions,null);
         holder.textView.setText(p.getDescription());
         Linkify.addLinks(holder.textView,Linkify.WEB_URLS);
         final String id = p.getPostId();

@@ -2,28 +2,139 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yash1213.miic">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_icon_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".CampusActivity">
+        android:theme="@style/SplashTheme">
+        <activity android:name=".Activity.FounderActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ConnectActivity">
+        <activity
+            android:name=".Activity.ForgotPasswordActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".UpdatesActivity">
+        <activity
+            android:name=".Activity.CoLibActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".DashboardActivity">
+        <activity
+            android:name=".Activity.DeveloperActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".Activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activity.LibraryActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.AddTeamActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoCurrentActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CurrentCosActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.OurStoryActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoCampusActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.AddUpdatesActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoUpdateActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoProfileActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.YourProfileActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoUsersActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CampusActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.StudentSignupActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.CoLoginActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.UpdatesActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.DashboardActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
+
+        <service
+            android:name=".Notification.MyFirebaseIdService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".Notification.MyFirebaseMessaging"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

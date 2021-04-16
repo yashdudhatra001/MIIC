@@ -40,11 +40,11 @@ public class CoLoginActivity extends Activity {
                     etcopass.setError("Password cannot be Empty!");
                     etcopass.requestFocus();
                 } else {
-                    if(username.equals("Admin") && password.equals("password")){
+                    if(username.equals("Miic.@possible") && password.equals("mIIc#24redefine")){
                         Intent ii = new Intent(getApplicationContext(), CoActivity.class);
                         startActivity(ii);
                     }else{
-                        Toast.makeText(CoLoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CoLoginActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
                     }
                     // check for Authentication
                 }

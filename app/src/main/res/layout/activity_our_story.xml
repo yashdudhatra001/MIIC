@@ -70,77 +70,6 @@
             android:layout_marginEnd="@dimen/_5sdp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/_8sdp"
-                    android:text="Vision : "
-                    android:textSize="@dimen/_14sdp"
-                    android:fontFamily="@font/ubuntubold"/>
-
-                <TextView
-                    android:id="@+id/vision"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12ssp"
-                    android:padding="@dimen/_8sdp"
-                    android:text=""
-                    android:includeFontPadding="true"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/ubunturegular"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:layout_marginEnd="@dimen/_8sdp"
-                android:background="@android:color/darker_gray"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/_8sdp"
-                    android:text="Mission : "
-                    android:textSize="@dimen/_14sdp"
-                    android:fontFamily="@font/ubuntubold"/>
-
-                <TextView
-                    android:id="@+id/mission"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:includeFontPadding="true"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/_12ssp"
-                    android:padding="@dimen/_8sdp"
-                    android:text=""
-                    android:fontFamily="@font/ubunturegular"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:layout_marginStart="@dimen/_8sdp"
-                android:layout_marginEnd="@dimen/_8sdp"
-                android:background="@android:color/darker_gray"
-                />
-
-
             <TextView
                 android:id="@+id/article"
                 android:layout_width="match_parent"
@@ -151,7 +80,7 @@
                 android:includeFontPadding="true"
                 android:ellipsize="end"
                 android:fontFamily="@font/ubunturegular"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault" />
+                />
 
             <View
                 android:layout_width="match_parent"
@@ -162,6 +91,51 @@
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:background="@android:color/darker_gray"
                 />
+
+            <TextView
+                android:id="@+id/tv_samkit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/_12ssp"
+                android:text=""
+                android:includeFontPadding="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubunturegular"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_prathmesh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/_12ssp"
+                android:text=""
+                android:includeFontPadding="true"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubunturegular"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:background="@android:color/darker_gray"
+                />
+
 
 
             <LinearLayout

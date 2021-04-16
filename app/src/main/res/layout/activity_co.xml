@@ -45,14 +45,12 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/_14ssp"/>
 
-        <ImageView
-            android:id="@+id/image_more"
-            android:layout_width="@dimen/_28sdp"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_compat"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/_28sdp"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="App Close"
             android:padding="@dimen/_2sdp"
-            android:visibility="gone"
-            android:src="@drawable/ic_more"
             />
     </LinearLayout>
 
@@ -147,6 +145,30 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_10sdp"
             android:text="Team"
+            android:textSize="@dimen/_14ssp"
+            android:textColor="@android:color/black"
+            />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_lib"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:padding="@dimen/_3sdp"
+        app:cardCornerRadius="@dimen/_10sdp"
+        card_view:cardElevation="5dp"
+        android:layout_margin="10dp"
+        card_view:contentPadding="5dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/card_team">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:text="Library"
             android:textSize="@dimen/_14ssp"
             android:textColor="@android:color/black"
             />
