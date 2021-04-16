@@ -79,7 +79,7 @@ public class CampusActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CampusActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CampusActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
             }
         });

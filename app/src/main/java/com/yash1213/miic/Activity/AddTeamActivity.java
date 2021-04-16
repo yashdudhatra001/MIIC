@@ -88,6 +88,7 @@ public class AddTeamActivity extends AppCompatActivity {
                     COs member =new COs(name,email,phn,imageUrl);
                     dbRef = FirebaseDatabase.getInstance().getReference("team");
                     dbRef.push().setValue(member);
+                    Toast.makeText(AddTeamActivity.this, "Member added", Toast.LENGTH_SHORT).show();
                     Intent ii = new Intent(AddTeamActivity.this, CoCurrentActivity.class);
                     ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(ii);

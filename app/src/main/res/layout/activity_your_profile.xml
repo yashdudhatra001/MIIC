@@ -48,13 +48,13 @@
             android:textSize="@dimen/_14ssp"/>
 
         <ImageView
-            android:id="@+id/image_more"
+            android:id="@+id/image_del"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:contentDescription="@string/app_name"
             android:padding="@dimen/_2sdp"
-            android:visibility="gone"
-            android:src="@drawable/ic_more"
+            android:visibility="visible"
+            android:src="@drawable/ic_baseline_delete_24"
             />
     </LinearLayout>
 

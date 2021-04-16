@@ -42,7 +42,7 @@ public class LoginActivity extends Activity {
     private SharedPreferences shPref;
     private SharedPreferences.Editor shPrefEditor;
     private FirebaseAuth mAuth;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,6 @@ public class LoginActivity extends Activity {
             etupass.setText(password);
         }
 
-
         btlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {                                                  // onCLick Login
@@ -107,11 +106,7 @@ public class LoginActivity extends Activity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                Intent ii = new Intent(getApplicationContext(),MainActivity.class);
-                                ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(ii);
-                                overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
-                                finish();
+                                checkIfEmailVerified();
                             }else{
                                 btlogin.setVisibility(View.VISIBLE);
                                 progressBar.setVisibility(View.GONE);
@@ -151,6 +146,31 @@ public class LoginActivity extends Activity {
         });
     }
 
+    private void checkIfEmailVerified()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified())
+        {
+            Intent ii = new Intent(getApplicationContext(),MainActivity.class);
+            ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(ii);
+            overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+            finish();
+            Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            // email is not verified, so just prompt the message to the user and restart this activity.
+            // NOTE: don't forget to log out the user.
+            FirebaseAuth.getInstance().signOut();
+            progressBar.setVisibility(View.GONE);
+            btlogin.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Verify your Email.", Toast.LENGTH_SHORT).show();
+            //restart this activity
+        }
+    }
+
     public void coordinatorLogin(View view) {                                                   // when user wants to login as coordinator
 
         TextView tv = findViewById(view.getId());
@@ -166,6 +186,12 @@ public class LoginActivity extends Activity {
         //tv.setTextColor(Color.BLUE);
         Intent ii = new Intent(LoginActivity.this,StudentSignupActivity.class);
         ii.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(ii);
+        overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
+    }
+
+    public void forgotPassword(View view){
+        Intent ii = new Intent(LoginActivity.this,ForgotPasswordActivity.class);
         startActivity(ii);
         overridePendingTransition(R.xml.activity_in,R.xml.activity_out);
     }
@@ -186,6 +212,7 @@ public class LoginActivity extends Activity {
         }
         if(netInfo == null || !netInfo.isConnected() || !netInfo.isAvailable()){
 
+
             Toast.makeText(getApplicationContext(), "No Internet connection!", Toast.LENGTH_LONG).show();
             try {
                 AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -203,6 +230,4 @@ public class LoginActivity extends Activity {
             }
         }
     }
-
-
 }

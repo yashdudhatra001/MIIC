@@ -46,7 +46,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         View itemview = inflater.inflate(R.layout.item, container, false);
         imageView = (ImageView) itemview.findViewById(R.id.ima1);
         //imageView.setImageResource(img[position]);
-        Picasso.get().load(imag.get(position)).placeholder(R.drawable.miic_b).into(imageView);
+        Picasso.get().load(imag.get(position)).placeholder(R.drawable.opening).into(imageView);
         //add item.xml to viewpager
         ((ViewPager) container).addView(itemview);
         return itemview;

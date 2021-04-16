@@ -71,12 +71,9 @@ public class UpdatesActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(UpdatesActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UpdatesActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
 
     }
 }

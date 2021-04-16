@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.yash1213.miic.Activity.CoProfileActivity;
-import com.yash1213.miic.R;
 import com.yash1213.miic.Model.Students;
+import com.yash1213.miic.R;
 
 import java.util.ArrayList;
 
@@ -27,18 +27,14 @@ public class CoUserAdapter extends RecyclerView.Adapter<CoUserAdapter.ViewHolder
 
     private Context context;
     private ArrayList<Students> studentList;
-    private FirebaseAuth mAuth;
-    private String uId = null;
     private DatabaseReference dbRef;
+    private DatabaseReference dbRef2;
     private View view;
 
     public CoUserAdapter(Context context, ArrayList<Students> studentList){
         this.context = context;
         this.studentList = studentList;
-        mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()!=null){
-            uId = mAuth.getCurrentUser().getUid();
-        }
+
     }
 
     @NonNull
@@ -53,6 +49,16 @@ public class CoUserAdapter extends RecyclerView.Adapter<CoUserAdapter.ViewHolder
         holder.idName.setText(studentList.get(position).getStudentName());
         holder.tvProfile.setText(studentList.get(position).getStudentName().substring(0,1));
         holder.idRating.setText(""+studentList.get(position).getTotalPoint());
+        holder.itemStudent.isClickable();
+        holder.itemStudent.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String sId = studentList.get(position).getStudentId();
+                simpleAlert(view,sId);
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                return true;
+            }
+        });
         holder.itemStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,18 +68,9 @@ public class CoUserAdapter extends RecyclerView.Adapter<CoUserAdapter.ViewHolder
                 context.startActivity(ii);
             }
         });
-        if(uId!=null){
-            holder.itemStudent.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    simpleAlert(view);
-                    return true;
-                }
-            });
-        }
     }
 
-    public void simpleAlert(View view) {
+    public void simpleAlert(View view, final String sId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Alert");
         builder.setMessage("Are you sure to delete?");
@@ -81,8 +78,9 @@ public class CoUserAdapter extends RecyclerView.Adapter<CoUserAdapter.ViewHolder
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dbRef = FirebaseDatabase.getInstance().getReference("students");
-                        dbRef.child(uId).removeValue();
-                        notifyDataSetChanged();
+                        dbRef2 = FirebaseDatabase.getInstance().getReference("Tokens");
+                        dbRef.child(sId).removeValue();
+                        dbRef2.child(sId).removeValue();
                     }
                 });
         builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

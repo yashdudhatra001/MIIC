@@ -1,6 +1,5 @@
 package com.yash1213.miic.Activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,11 +23,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.yash1213.miic.Model.Campus;
 import com.yash1213.miic.Adapter.CampusAdapter;
+import com.yash1213.miic.Model.Campus;
+import com.yash1213.miic.Notification.Client;
+import com.yash1213.miic.Notification.Data;
+import com.yash1213.miic.Notification.MyResponse;
+import com.yash1213.miic.Notification.Sender;
+import com.yash1213.miic.Notification.Token;
 import com.yash1213.miic.R;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CoCampusActivity extends AppCompatActivity {
 
@@ -45,6 +53,9 @@ public class CoCampusActivity extends AppCompatActivity {
     private DatabaseReference dbRef, dbIRef;
     private ArrayList<Campus> campuses = new ArrayList<>();
 
+    private APIService apiService;
+    private boolean notify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +68,8 @@ public class CoCampusActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         progressBar = findViewById(R.id.progress_circular);
         rvCampus = findViewById(R.id.campus_tips);
@@ -105,7 +118,7 @@ public class CoCampusActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CoCampusActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CoCampusActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,16 +136,51 @@ public class CoCampusActivity extends AppCompatActivity {
                             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                             addTitle.setText("");
                             addDesc.setText("");
-                            if (Build.VERSION.SDK_INT >= 11) {
-                                recreate();
-                            } else {
-                                finish();
-                                startActivity(getIntent());
+                            notify= true;
+                            if(notify) {
+                                sendNotification();
                             }
+                            campusAdapter.notifyDataSetChanged();
                             Toast.makeText(CoCampusActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+            }
+        });
+    }
+
+
+    private void sendNotification(){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        //Query query = tokens.orderByKey().equalTo(receiver);
+        tokens.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(snapshot.getKey(), R.mipmap.ic_icon,"New Tips Added. Take a look." , "MIIC Campus note",
+                            snapshot.getKey());
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if (response.code() == 200){
+                                        if (response.body().success != 1){
+                                            //Toast.makeText(CoCampusActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                           // Toast.makeText(CoCampusActivity.this, "SuccessNotification", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+                                }
+                            });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }

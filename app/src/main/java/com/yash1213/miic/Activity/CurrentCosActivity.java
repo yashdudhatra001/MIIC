@@ -68,7 +68,7 @@ public class CurrentCosActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CurrentCosActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CurrentCosActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }

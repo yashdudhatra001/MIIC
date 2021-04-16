@@ -91,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(DashboardActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DashboardActivity.this, "Oops! Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -109,6 +109,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DashboardActivity.this, "Oops! something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
         profileView.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +120,5 @@ public class DashboardActivity extends AppCompatActivity {
                 startActivity(ii);
             }
         });
-
     }
-
 }

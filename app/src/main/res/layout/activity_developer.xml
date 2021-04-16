@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".Activity.DeveloperActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:id="@+id/layout_header"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/_8sdp"
+            android:background="#263238"
+            android:nestedScrollingEnabled="false"
+            android:scrollbars="none"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <ImageView
+                android:id="@+id/image_back"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/ic_baseline_arrow_back_24"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/ubuntubold"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="Developers"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_14ssp"/>
+
+            <ImageView
+                android:id="@+id/image_more"
+                android:layout_width="@dimen/_28sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/_2sdp"
+                android:visibility="gone"
+                android:src="@drawable/ic_more"
+                />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="5dp"
+            android:layout_margin="3dp"
+            card_view:contentPadding="10dp"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            >
+            <RelativeLayout
+                android:id="@+id/team_layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imageC1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/yash"
+                    android:layout_centerHorizontal="true"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000"/>
+
+                <TextView
+                    android:id="@+id/cName1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageC1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:linksClickable="true"
+                    android:text="Yash Dudhatra"
+                    android:fontFamily="@font/ubuntubold"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_18sdp" />
+
+                <TextView
+                    android:id="@+id/cEmail1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cName1"
+                    android:linksClickable="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="yashdudhatra001@gmail.com"
+                    android:textColor="#000"
+                    android:fontFamily="@font/ubunturegular"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/cContact1"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cEmail1"
+                    android:layout_toRightOf="@+id/imageC1"
+                    android:layout_marginStart="@dimen/_25sdp"
+                    android:linksClickable="true"
+                    android:text="contact"
+                    android:textColor="#000"
+                    android:fontFamily="@font/ubunturegular"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="5dp"
+            android:layout_margin="3dp"
+            card_view:contentPadding="10dp"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            >
+            <RelativeLayout
+                android:id="@+id/team_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/imageC2"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/yashp"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FF000000"/>
+
+                <TextView
+                    android:id="@+id/cName2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/imageC2"
+                    android:linksClickable="true"
+                    android:text="Yash Parekh"
+                    android:fontFamily="@font/ubuntubold"
+                    android:textColor="#000"
+                    android:textSize="@dimen/_18sdp" />
+
+                <TextView
+                    android:id="@+id/cEmail2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cName2"
+                    android:layout_centerHorizontal="true"
+                    android:linksClickable="true"
+                    android:text="yp782002@gmail.com"
+                    android:textColor="#000"
+                    android:fontFamily="@font/ubunturegular"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/cContact2"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/cEmail2"
+                    android:layout_toRightOf="@+id/imageC2"
+                    android:layout_marginStart="@dimen/_25sdp"
+                    android:linksClickable="true"
+                    android:text="contact"
+                    android:textColor="#000"
+                    android:fontFamily="@font/ubunturegular"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

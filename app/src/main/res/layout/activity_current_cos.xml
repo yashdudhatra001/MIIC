@@ -42,7 +42,7 @@
             android:fontFamily="@font/ubuntubold"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="Our Team"
+            android:text="Current Team"
             android:textColor="@android:color/white"
             android:textSize="@dimen/_14ssp"/>
 
