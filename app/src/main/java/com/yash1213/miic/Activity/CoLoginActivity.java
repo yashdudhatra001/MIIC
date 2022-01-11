@@ -40,7 +40,7 @@ public class CoLoginActivity extends Activity {
                     etcopass.setError("Password cannot be Empty!");
                     etcopass.requestFocus();
                 } else {
-                    if(username.equals("Miic.@possible") && password.equals("mIIc#24redefine")){
+                    if(username.equals("USER_NAME") && password.equals("PASSWORD")){
                         Intent ii = new Intent(getApplicationContext(), CoActivity.class);
                         startActivity(ii);
                     }else{
